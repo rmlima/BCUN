@@ -1,0 +1,13 @@
+###########################################
+#####     Write Status to SIMLOG      #####
+###########################################
+## Starting Time:Wed Apr  8 17:34:37 2015
+## .....END TIME:Wed Apr  8 17:34:37 2015
+## Simulations Iterations:1000
+## LBF with size m=1024 and using k=4 hash functions
+## HOPMAX=20
+## Arithmetic progression with rate R=1
+## Resources  Pool or Total:211 last iteration
+## Distinct  Resources LBF :129 last iteration
+## Total Queries with duplication:211000
+## Average Distinct Resources LBF:132.84
