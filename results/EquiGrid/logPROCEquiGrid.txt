@@ -1,0 +1,20 @@
+##################### Log ProcSimulation #########################
+Date:Sáb Mar  5 16:48:50 WET 2016
+CNodes: 
+ITER: 500
+Drops Last FLOOD: 6809 - 19%
+############################ TIME ################################
+Execution time was 52 minutes and 25 seconds =  0 Hours
+##################################################################
+################### Transmissions Acts ###########################
+TRANSFLOOD - Total: 17737498
+TRANSBCIR  - Total: 16962720 - Save: 4%
+TRANSBCIR2 - Total: 18756300 - Save: -5%
+TRANSGBC   - Total: 13551234 - Save: 23%
+##################################################################
+########### COLLISIONS - Drop Packets - Percentage ###############
+DropsFLOOD - 19.322 %
+DropsBCIR  - 19.064 %
+DropsBCIR2 - 19.383 %
+DropsGBC   - 13.433 %
+##################################################################
