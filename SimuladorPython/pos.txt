@@ -1,0 +1,33 @@
+set ns [new Simulator]
+set nf [open out.nam w]
+$ns namtrace-all $nf
+proc finish {} {
+global ns nf
+$ns flush-trace
+close $nf
+exec nam out.nam &
+exit 0
+}
+for {set i 0} {$i < 10 } {incr i} {set node_($i) [$ns node]}
+$ns duplex-link $node_(0) $node_(8) 10Mb 10ms DropTail
+$ns duplex-link $node_(0) $node_(1) 10Mb 10ms DropTail
+$ns duplex-link $node_(0) $node_(3) 10Mb 10ms DropTail
+$ns duplex-link $node_(0) $node_(7) 10Mb 10ms DropTail
+$ns duplex-link $node_(1) $node_(2) 10Mb 10ms DropTail
+$ns duplex-link $node_(1) $node_(3) 10Mb 10ms DropTail
+$ns duplex-link $node_(1) $node_(6) 10Mb 10ms DropTail
+$ns duplex-link $node_(1) $node_(7) 10Mb 10ms DropTail
+$ns duplex-link $node_(1) $node_(8) 10Mb 10ms DropTail
+$ns duplex-link $node_(3) $node_(4) 10Mb 10ms DropTail
+$ns duplex-link $node_(3) $node_(5) 10Mb 10ms DropTail
+$ns duplex-link $node_(3) $node_(7) 10Mb 10ms DropTail
+$ns duplex-link $node_(3) $node_(9) 10Mb 10ms DropTail
+$ns duplex-link $node_(4) $node_(9) 10Mb 10ms DropTail
+$ns duplex-link $node_(4) $node_(5) 10Mb 10ms DropTail
+$ns duplex-link $node_(4) $node_(7) 10Mb 10ms DropTail
+$ns duplex-link $node_(5) $node_(9) 10Mb 10ms DropTail
+$ns duplex-link $node_(5) $node_(7) 10Mb 10ms DropTail
+$ns duplex-link $node_(6) $node_(8) 10Mb 10ms DropTail
+$ns duplex-link $node_(7) $node_(9) 10Mb 10ms DropTail
+$ns at 5.0 "finish"
+$ns run
