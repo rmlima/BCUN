@@ -1,0 +1,120 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]
+then
+	echo -e "Usage:  simulEquiGrid.sh  <cnodes> <events>\n **** rml@fam.ulusiada.pt v2.0 ****"
+	exit 1
+else
+
+CNODES=$1
+EVENTS=$2
+
+case "$CNODES" in
+10) MHOP=12
+    ;;
+13) MHOP=16
+    ;;
+25) MHOP=32
+     ;;
+100) MHOP=100
+     ;;
+*) echo -e "Error:      cnodes must be 10 or 13 or 25 or 100"
+   exit 1
+   ;;
+esac
+
+RESULTPATH="/dev/shm/ramfs"
+LOG="/home/rml/work/LOG/ns2RND/EquiGrid"
+DATASET="/home/rml/work/dataset/EquiGrid"
+
+
+
+if [ ! -d $DATASET ]
+then
+	echo -e "Error:	No dataset available"
+	exit 1
+fi
+
+if [ ! -d $LOG ]
+then
+        mkdir $LOG
+else
+	rm $LOG"/rmlsearch"*
+fi
+
+
+START=`date +%s`
+
+
+
+if [ ! -d $RESULTPATH ]; then
+    mkdir $RESULTPATH
+else
+	rm -rf $RESULTPATH/*
+fi
+
+
+ALCANCE=200
+TOPO=$DATASET"/Grid"$CNODES
+NODES=$(($CNODES*$CNODES))
+SIDE=$(($ALCANCE * ($(($CNODES+1))) ))
+SIMULTIME=$((1000 + $(( 40*$EVENTS )) ))
+
+cp gbcsearch.tcl gbcsearch.tcl.bak
+
+# SIMULTIME=$((($(($NODES * ($(($NODES-1))) ))) * $(($DELTA+1))))
+
+sed -i 's/set val(stop).*/set val(stop) \t\t '$SIMULTIME'/g' gbcsearch.tcl
+
+sed -i 's/set val(nn).*/set val(nn) \t\t '$NODES'/g' gbcsearch.tcl
+
+sed -i 's/set val(x).*/set val(x) \t\t '$SIDE'/g' gbcsearch.tcl
+sed -i 's/set val(y).*/set val(y) \t\t '$SIDE'/g' gbcsearch.tcl
+
+sed -i 's/set val(out).*/set val(out) \t\t "\/dev\/shm\/ramfs\/rmlsearch"/g' gbcsearch.tcl
+
+python genTraffileRND.py $CNODES $EVENTS
+
+SCENARIO=$DATASET"/Grid"$CNODES
+
+ns gbcsearch.tcl -traf traffileGBC -mov $SCENARIO
+cp $RESULTPATH/rmlsearch.tr $LOG"/rmlsearchgbc.tr"
+ns gbcsearch.tcl -traf traffileBCIR -mov $SCENARIO
+cp $RESULTPATH/rmlsearch.tr $LOG"/rmlsearchbcir.tr"
+ns gbcsearch.tcl -traf traffileFLOOD -mov $SCENARIO
+cp $RESULTPATH/rmlsearch.tr $LOG"/rmlsearchflood.tr"
+
+#Falta copiar nam se existir! O ultimo nam fica no /dev/shm/ramfs
+
+if [ -f ./bloom.log ]
+then
+        mv bloom.log $LOG/bloomRND$PROTO.log
+fi
+if [ -f ./gradient.log ]
+then
+        mv gradient.log $LOG/gradientRND.log
+fi
+
+END=`date +%s`
+DIFF=$(( $END - $START ))
+{
+echo "################## Log Simulation EXECUTION ######################"
+echo "Date:`date`"
+echo "Nodes: $NODES"
+echo "Queries: $EVENTS"
+echo "Area: "$SIDE"x"$SIDE"m² = $(( $SIDE*$SIDE/1000000 )) Km²"
+echo "Density: $((($NODES * 1000000) / ($SIDE * $SIDE))) Nodes/Km²"
+echo "############################ TIME ################################"
+echo "Execution time was $(($DIFF / 60)) minutes and $(($DIFF % 60)) seconds =  $(($DIFF / 3600)) Hours" 
+} | tee $LOG/logGridSimul.txt
+fi
+
+echo
+echo End simulation ... starting processing data
+echo
+./simprocEquiGrid.sh $MHOP
+echo
+echo The End
+echo
+
+

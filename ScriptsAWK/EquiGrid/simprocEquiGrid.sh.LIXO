@@ -1,0 +1,118 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]
+then
+	echo -e "Usage:  simprocEquiGrid.sh <mhop>\n **** rml@fam.ulusiada.pt v1.1 ****"
+	exit 1
+else
+MHOP=$1
+
+INPUT="/home/rml/work/LOG/ns2RND/EquiGrid"
+OUTPUT="/home/rml/work/LOG/dat/EquiGrid"
+DROPGBC=0
+DROPBCIR=0
+DROPFLOOD=0
+EVDROP=0
+TRANSGBC=0
+TRANSBCIR=0
+TRANSFLOOD=0
+
+if [ ! -d $INPUT ]
+then
+	echo -e "Error:	No dataset available"
+	exit 1
+fi
+
+if [ ! -d $OUTPUT ]
+then
+	mkdir $OUTPUT
+fi
+
+
+START=`date +%s`
+
+
+rm $OUTPUT/*
+
+
+#Aquecimento
+./latlearnRND.awk $INPUT/rmlsearchgbc.tr > $OUTPUT/lattmpRND.dat
+cat $OUTPUT/lattmpRND.dat | sort -n >> $OUTPUT/latgbclearnRND.dat
+./latRND.awk $INPUT/rmlsearchgbc.tr > $OUTPUT/lattmpRND.dat
+cat $OUTPUT/lattmpRND.dat | sort -n >> $OUTPUT/latgbcRND.dat
+./latRND.awk $INPUT/rmlsearchbcir.tr > $OUTPUT/lattmpRND.dat
+cat $OUTPUT/lattmpRND.dat | sort -n >> $OUTPUT/latbcirRND.dat
+
+./latRND.awk $INPUT/rmlsearchflood.tr > $OUTPUT/lattmpRND.dat
+cat $OUTPUT/lattmpRND.dat | sort -n >> $OUTPUT/latfloodRND.dat
+
+
+./translearnRND.awk $INPUT/rmlsearchgbc.tr > $OUTPUT/transtmpRND.dat
+cat $OUTPUT/transtmpRND.dat | sort -n >> $OUTPUT/transgbclearnRND.dat
+
+./transRND.awk $INPUT/rmlsearchgbc.tr > $OUTPUT/transtmpRND.dat
+cat $OUTPUT/transtmpRND.dat | sort -n >> $OUTPUT/transgbcRND.dat
+
+./transRND.awk $INPUT/rmlsearchbcir.tr > $OUTPUT/transtmpRND.dat
+cat $OUTPUT/transtmpRND.dat | sort -n >> $OUTPUT/transbcirRND.dat
+
+./transRND.awk $INPUT/rmlsearchflood.tr > $OUTPUT/transtmpRND.dat
+cat $OUTPUT/transtmpRND.dat | sort -n >> $OUTPUT/transfloodRND.dat
+
+
+
+
+DROPGBC=($(./drop.awk $INPUT/rmlsearchgbc.tr))
+DROPBCIR=($(./drop.awk $INPUT/rmlsearchbcir.tr))
+DROPFLOOD=($(./drop.awk $INPUT/rmlsearchflood.tr))
+TRANSGBC=($(./totaltrans.awk $INPUT/rmlsearchgbc.tr))
+TRANSBCIR=($(./totaltrans.awk $INPUT/rmlsearchbcir.tr))
+TRANSFLOOD=($(./totaltrans.awk $INPUT/rmlsearchflood.tr))
+
+#EVDROPtmp=($(./dropevent.awk $RESULTPATH/rmlsearch.tr))
+#EVDROP=$(( $EVDROP + $EVDROPtmp ))
+
+
+
+rm $OUTPUT/lattmpRND*
+rm $OUTPUT/transtmpRND*
+
+./mediaslat.awk $OUTPUT/latgbcRND.dat | sort -n > $OUTPUT/latgbc_avgRND.dat
+./mediaslat.awk $OUTPUT/latgbclearnRND.dat | sort -n > $OUTPUT/latgbclearn_avgRND.dat
+./mediaslat.awk $OUTPUT/latbcirRND.dat | sort -n >  $OUTPUT/latbcir_avgRND.dat
+./mediaslat.awk $OUTPUT/latfloodRND.dat | sort -n > $OUTPUT/latflood_avgRND.dat
+
+./mediastrans.awk $OUTPUT/transgbcRND.dat  | sort -n > $OUTPUT/transgbc_avgRND.dat
+./mediastrans.awk $OUTPUT/transgbclearnRND.dat  | sort -n > $OUTPUT/transgbclearn_avgRND.dat
+./mediastrans.awk $OUTPUT/transbcirRND.dat  | sort -n >  $OUTPUT/transbcir_avgRND.dat
+./mediastrans.awk $OUTPUT/transfloodRND.dat  | sort -n > $OUTPUT/transflood_avgRND.dat
+
+
+./graphRNDpdf.sh $OUTPUT $MHOP
+./amostrasRND.sh $OUTPUT $MHOP
+
+END=`date +%s`
+DIFF=$(( $END - $START ))
+{
+echo "##################### Log ProcSimulation #########################"
+echo "Date:`date`"
+echo "Drops Last FLOOD: $DROPtmp - $(($DROPFLOOD * 100 / ($TRANSFLOOD-1)))%"
+echo "############################ TIME ################################"
+echo "Execution time was $(($DIFF / 60)) minutes and $(($DIFF % 60)) seconds =  $(($DIFF / 3600)) Hours" 
+echo "##################################################################"
+echo "################### Transmissions Acts ###########################"
+echo "TRANSFLOOD - Total: $TRANSFLOOD"
+echo "TRANSBCIR  - Total: $TRANSBCIR - Save: $(( ($TRANSFLOOD - $TRANSBCIR) * 100 / ($TRANSFLOOD-1)))%" 
+echo "TRANSGBC   - Total: $TRANSGBC - Save: $(( ($TRANSFLOOD - $TRANSGBC) * 100 / ($TRANSFLOOD-1)))%" 
+echo "##################################################################"
+echo "########## COLLISIONS - Last Network - Last Search ###############"
+echo "DropsFLOOD - $(($DROPFLOOD * 100 / ($TRANSFLOOD-1)))%"
+echo "DropsBCIR  - $(($DROPBCIR * 100 / ($TRANSBCIR-1)))%"
+echo "DropsGBC   - $(($DROPGBC * 100 / ($TRANSGBC-1)))%"
+#echo "##### EVENT COLLISIONS - Last Network - Last Search ##############"
+#echo "Drops - Last: $EVDROP - $(($EVDROP * 100 / ($TRANS-1)))%"
+echo "##################################################################"
+} | tee $OUTPUT/logManProc.txt
+fi
+cp $INPUT/logEquiGridSimul.txt $OUTPUT
+

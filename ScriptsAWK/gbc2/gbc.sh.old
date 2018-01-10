@@ -1,0 +1,122 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]
+then
+	echo -e "Usage:  test.sh  <cnodes> <iter>\n **** rml@fam.ulusiada.pt v0.1 ****"
+	exit 1
+else
+
+CNODES=$1
+ITER=$2
+RESULTPATH="/dev/shm/ramfs"
+LOG="/home/rml/work/LOG/"$CNODES"nodes"
+DROP=0
+EVDROP=0
+TRANS=0
+
+
+if [ ! -d "../dataset/"$CNODES"nodes" ]
+then
+	echo -e "Error:	No dataset available"
+	exit 1
+fi
+
+START=`date +%s`
+
+
+if [ -f ./latgrad.dat ]
+then
+        rm latgrad.dat
+fi
+
+if [ -f ./latnograd.dat ]
+then
+        rm latnograd.dat
+fi
+
+if [ ! -d $RESULTPATH ]; then
+    mkdir $RESULTPATH
+else
+        rm -rf $RESULTPATH/*
+fi
+
+if [ -f ./bloom.log ]
+then
+        rm bloom.log
+fi
+
+if [ -f ./gradient.log ]
+then
+        rm gradient.log
+fi
+
+
+
+
+for (( c=0; c<$ITER; c++ ))
+do
+
+TOPO="../dataset/"$CNODES"nodes/topo"$c".ini"
+NODES=`cat $TOPO | awk '{print $2}' | head -1`
+SIDE=`cat $TOPO | awk '{print $2}' | tail -1`
+echo SIDE=$SIDE
+
+cp gbcsearch.tcl gbcsearch.tcl.bak
+
+SIMULTIME=$((($(($NODES * ($(($NODES-1))) ))) * 41))
+sed -i 's/set val(stop).*/set val(stop) \t\t '$SIMULTIME'/g' gbcsearch.tcl
+
+sed -i 's/set val(nn).*/set val(nn) \t\t '$NODES'/g' gbcsearch.tcl
+
+sed -i 's/set val(x).*/set val(x) \t\t '$SIDE'/g' gbcsearch.tcl
+sed -i 's/set val(y).*/set val(y) \t\t '$SIDE'/g' gbcsearch.tcl
+
+sed -i 's/set val(out).*/set val(out) \t\t "\/dev\/shm\/ramfs\/rmlsearch"/g' gbcsearch.tcl
+
+python genTraffileAll.py $CNODES $c
+
+SCENARIO="../dataset/"$CNODES"nodes/cenario"$c
+ns gbcsearch.tcl -traf traffile -mov $SCENARIO -proto gbc
+#ns bcirsearch.tcl -traf traffile -mov scenarios/cenario -proto bcir
+
+./lat.awk $RESULTPATH/rmlsearchgbc.tr > lat.dat
+cat lat.dat | awk 'NR==1{print $3 " " $2}' >> latnograd.dat
+#Ignor
+#nquery=$(( NODES * (NODES + 1) * 0.5 ))
+SKIP = (( NODES * 2 ))
+tail -n +$SKIP lat.dat >> latgrad.dat
+
+DROPtmp=($(./drop.awk $RESULTPATH/rmlsearchgbc.tr))
+EVDROPtmp=($(./dropevent.awk $RESULTPATH/rmlsearchgbc.tr))
+TRANStmp=($(./trans.awk $RESULTPATH/rmlsearchgbc.tr))
+
+DROP=$(( $DROP + $DROPtmp ))
+EVDROP=$(( $EVDROP + $EVDROPtmp ))
+TRANS=$(( $TRANS + $TRANStmp ))
+done
+
+./mediaslat3.awk latnograd.dat
+./mediaslat4.awk latgrad.dat
+
+eog ../dataset/"$CNODES"nodes/network$((ITER-1)).png &
+./graph.sh
+
+END=`date +%s`
+DIFF=$(( $END - $START ))
+{
+echo "######################## Log Simulation ##########################"
+echo "Date:`date`"
+echo "Nodes: $NODES"
+echo "Area: "$SIDE"x"$SIDE"m² = $(( $SIDE*$SIDE/1000000 )) Km²"
+echo "Density: $((($NODES * 1000000) / ($SIDE * $SIDE))) Nodes/Km²"
+echo "############################ TIME ################################"
+echo "Execution time was $(($DIFF / 60)) minutes and $(($DIFF % 60)) seconds =  $(($DIFF / 3600)) Hours" 
+echo "##################################################################"
+echo "########## COLLISIONS - Last Network - Last Search ###############"
+echo "Drops - Last: $DROP - $(($DROP * 100 / ($TRANS-1)))%"
+echo "##### EVENT COLLISIONS - Last Network - Last Search ##############"
+echo "Drops - Last: $EVDROP - $(($EVDROP * 100 / ($TRANS-1)))%"
+echo "##################################################################"
+} | tee log.txt
+fi
+

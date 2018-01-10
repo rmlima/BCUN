@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+import random as rnd
+import os
+import math
+import sys
+
+def printf(fmt, *varargs):
+    sys.stdout.write(fmt % varargs)
+
+
+def main():
+    LOG = False
+
+    if (len(sys.argv) != 3):
+        print "ERROR: genTraffileRND.py <Lnodes> <events>"
+        sys.exit(1)
+
+    L = int(sys.argv[1]) # LxL Grid Square
+    EVENTS = int(sys.argv[2])
+
+    NMAX=L*L # Nodes
+    SIM=EVENTS*100 #MAX Simulation Time
+    
+    filename='/home/rml/work/dataset/Manhattan/Manhattan'+str(L)
+    if ( not os.path.exists(filename) ):
+        print "ERROR: No scenario available"
+        sys.exit(1)
+
+  
+    qid=0
+    fgbc=open("./traffileGBC", "w")
+    fbcir=open("./traffileBCIR", "w")
+    fflood=open("./traffileFLOOD", "w")
+    for i in range(1, 6):
+            qid+=1
+            time=rnd.randrange(20,900)
+            initiator=rnd.randrange(0,NMAX)
+            resource=rnd.randrange(0,NMAX)
+            while (resource==initiator+1):
+                    resource=rnd.randrange(0,NMAX)
+            fgbc.writelines("$ns_ at %d \"$gbc_(%d) gbcsearch %d %d 1000 1\"\n" % (time,initiator,qid,resource))
+    for i in range(0, EVENTS):
+            qid+=1
+            time=rnd.randrange(1000,SIM+1000)
+            initiator=rnd.randrange(0,NMAX)
+            resource=rnd.randrange(0,NMAX)
+            while (resource==initiator+1):
+                    resource=rnd.randrange(0,NMAX)
+            fgbc.writelines("$ns_ at %d \"$gbc_(%d) gbcsearch %d %d 1000 1\"\n" % (time,initiator,qid,resource))
+            fbcir.writelines("$ns_ at %d \"$gbc_(%d) bcirsearch %d %d 1000 1\"\n" % (time,initiator,qid,resource))
+            fflood.writelines("$ns_ at %d \"$gbc_(%d) floodsearch %d %d 1000 1\"\n" % (time,initiator,qid,resource))
+    fgbc.close()
+    fbcir.close()
+    fflood.close()
+    return 0
+
+if __name__ == "__main__":
+    print main()
+
