@@ -1,0 +1,8 @@
+Simulation Log ##### Date: 2013-03-18
+Random Geometric:
+NMAX=100
+m=2
+
+Simulation:
+ITERATIONS=2000
+Duration=2888seconds

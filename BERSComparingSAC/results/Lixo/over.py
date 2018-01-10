@@ -1,0 +1,70 @@
+#Display Transmission Ratio
+import os
+
+DATAFILE='overhead4.dat'
+PLOTFILE='overhead5b.png'
+
+f=os.popen('gnuplot -persistent' ,'w')
+print >>f, "set xrange [20:85]"
+#print >>f, "set sample 8"
+print >>f, "set border 3 back ls 11"
+print >>f, "set style line 11 lc rgb '#808080' lt 1"
+print >>f, "set border 3 back ls 11"
+print >>f, "set tics nomirror"
+print >>f, "set style data linespoints"
+print >>f, "set style line 12 lc rgb '#808080' lt 0 lw 1"
+print >>f, "set grid back ls 12"
+print >>f, "set style line 1 lc rgb '#8b1a0e' pt 1 ps 2 lt 1 lw 2"
+print >>f, "set style line 91 lc rgb '#8b1a0e' pt 1 ps 2 lt 0 lw 2"
+print >>f, "set style line 2 lc rgb '#5e9c36' pt 6 ps 2 lt 1 lw 2"
+print >>f, "set style line 92 lc rgb '#5e9c36' pt 6 ps 2 lt 0 lw 2"
+print >>f, "set style line 3 lc rgb '#191970' pt 4 ps 2 lt 1 lw 2"
+print >>f, "set style line 93 lc rgb '#191970' pt 4 ps 2 lt 0 lw 2"
+print >>f, "set style line 4 lc rgb '#b8860b' pt 8 ps 2 lt 1 lw 2"
+print >>f, "set style line 94 lc rgb '#b8860b' pt 8 ps 2 lt 0 lw 2"
+print >>f, "set style line 5 lc rgb '#9370db' pt 12 ps 2 lt 1 lw 2"
+print >>f, "set style line 95 lc rgb '#9370db' pt 12 ps 2 lt 0 lw 2"
+print >>f, "set key at 85,0.17"
+print >>f, "set xlabel 'Resource Density (%)'; set ylabel 'Retransmissions Ratio'"
+print >>f, "plot \"overhead4.dat\" using 1:3 ti \"BERS\" w lp ls 1, \"overhead4.dat\" using 1:5 ti \"BCIR\" w lp ls 4, \"overhead4.dat\" using 1:4 ti \"BERS*\" w lp ls 2, \"overhead4.dat\" using 1:6 ti \"BCIR*\" w lp ls 5"
+#print >>f, "plot '%s' using 1:2 ti 'Flooding' w lp ls 3, '%s' using 1:3  ti 'BERS ; BCIR' w lp ls 1, '%s' using 1:4  ti 'BERS* ; BCIR*' w lp ls 2" % (DATAFILE) % (DATAFILE) % (DATAFILE)
+print >>f, "set terminal png enhanced font 'Verdana,14'"
+print >>f, "set out '%s'" % PLOTFILE
+print >>f, "set key at 85,0.17"
+print >>f, "pause 2; replot"
+f.flush()
+
+
+DATAFILE='overhead3.dat'
+PLOTFILE='overhead5.png'
+
+f=os.popen('gnuplot -persistent' ,'w')
+print >>f, "set xrange [20:85]"
+#print >>f, "set sample 8"
+print >>f, "set border 3 back ls 11"
+print >>f, "set style line 11 lc rgb '#808080' lt 1"
+print >>f, "set border 3 back ls 11"
+print >>f, "set tics nomirror"
+print >>f, "set style data linespoints"
+print >>f, "set style line 12 lc rgb '#808080' lt 0 lw 1"
+print >>f, "set grid back ls 12"
+print >>f, "set style line 1 lc rgb '#8b1a0e' pt 1 ps 2 lt 1 lw 2"
+print >>f, "set style line 91 lc rgb '#8b1a0e' pt 1 ps 2 lt 0 lw 2"
+print >>f, "set style line 2 lc rgb '#5e9c36' pt 6 ps 2 lt 1 lw 2"
+print >>f, "set style line 92 lc rgb '#5e9c36' pt 6 ps 2 lt 0 lw 2"
+print >>f, "set style line 3 lc rgb '#191970' pt 4 ps 2 lt 1 lw 2"
+print >>f, "set style line 93 lc rgb '#191970' pt 4 ps 2 lt 0 lw 2"
+print >>f, "set style line 4 lc rgb '#b8860b' pt 8 ps 2 lt 1 lw 2"
+print >>f, "set style line 94 lc rgb '#b8860b' pt 8 ps 2 lt 0 lw 2"
+print >>f, "set style line 5 lc rgb '#9370db' pt 12 ps 2 lt 1 lw 2"
+print >>f, "set style line 95 lc rgb '#9370db' pt 12 ps 2 lt 0 lw 2"
+print >>f, "set key at 85,0.17"
+print >>f, "set xlabel 'Resource Density (%)'; set ylabel 'Retransmissions Ratio'"
+print >>f, "plot \"overhead3.dat\" using 1:3 ti \"\" w l ls 1, \"overhead4.dat\" using 1:3 ti \"BERS\" w lp ls 91, \"overhead3.dat\" using 1:5 ti \"\" w l ls 4, \"overhead4.dat\" using 1:5 ti \"BCIR\" w lp ls 94, \"overhead3.dat\" using 1:4 ti \"\" w l ls 2,  \"overhead4.dat\" using 1:4 ti \"BERS*\" w lp ls 92,\"overhead3.dat\" using 1:6 ti \"\" w l ls 5, \"overhead4.dat\" using 1:6 ti \"BCIR*\" w lp ls 95"
+#print >>f, "plot '%s' using 1:2 ti 'Flooding' w lp ls 3, '%s' using 1:3  ti 'BERS ; BCIR' w lp ls 1, '%s' using 1:4  ti 'BERS* ; BCIR*' w lp ls 2" % (DATAFILE) % (DATAFILE) % (DATAFILE)
+print >>f, "set terminal png enhanced font 'Verdana,14'"
+print >>f, "set out '%s'" % PLOTFILE
+print >>f, "set key at 85,0.17"
+print >>f, "pause 2; replot"
+f.flush()
+
