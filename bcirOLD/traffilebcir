@@ -1,0 +1,5 @@
+# traffgen -n 5 -m 18 -i 5 -t 0 -z 1000 -s 1
+#
+# Registrations
+#
+$ns_ at 1 "$bcir_(0) bcir 1000 1 .1 1"

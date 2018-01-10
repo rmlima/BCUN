@@ -1,0 +1,5 @@
+# traffgen -n 5 -m 18 -i 5 -t 0 -z 1000 -s 1
+#
+# Registrations
+#
+$ns_ at 10.000000 "$bcir_(0) flood 1000"

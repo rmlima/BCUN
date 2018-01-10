@@ -1,0 +1,22 @@
+# traffgen -n 5 -m 18 -i 5 -t 0 -z 1000 -s 1
+#
+# Registrations
+#
+$ns_ at 0.000000 "$bcir_(4) bcast 1000"
+$ns_ at 5.000000 "$bcir_(1) bcast 1000"
+$ns_ at 10.000000 "$bcir_(3) bcast 1000"
+$ns_ at 15.000000 "$bcir_(3) bcast 1000"
+$ns_ at 20.000000 "$bcir_(4) bcast 1000"
+$ns_ at 25.000000 "$bcir_(0) bcast 1000"
+$ns_ at 30.000000 "$bcir_(1) bcast 1000"
+$ns_ at 35.000000 "$bcir_(3) bcast 1000"
+$ns_ at 40.000000 "$bcir_(1) bcast 1000"
+$ns_ at 45.000000 "$bcir_(2) bcast 1000"
+$ns_ at 50.000000 "$bcir_(2) bcast 1000"
+$ns_ at 55.000000 "$bcir_(3) bcast 1000"
+$ns_ at 60.000000 "$bcir_(1) bcast 1000"
+$ns_ at 65.000000 "$bcir_(2) bcast 1000"
+$ns_ at 70.000000 "$bcir_(4) bcast 1000"
+$ns_ at 75.000000 "$bcir_(4) bcast 1000"
+$ns_ at 80.000000 "$bcir_(3) bcast 1000"
+$ns_ at 85.000000 "$bcir_(3) bcast 1000"

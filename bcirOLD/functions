@@ -1,0 +1,75 @@
+#! /usr/bin/awk -f
+#
+# Parse a ns2 wireless trace file and generate the following stats:
+# - number of flows (senders)
+# - time of simulation run
+# - number of packets sent (at the Application)
+# - number of packets received (at the Application)
+# - number of packets dropped (at the Application)
+# - number of collisions (802.11)
+# - average delay
+# - average throughput
+# - average traffic rate (measured)
+# - and more....
+#
+# Author: ?   - I don't remember where I found the first version of this script :-(
+#
+# Modified by Julian Monteiro <jm@ime.usp.br>
+# Last updated: Nov, 10 2006  
+# version 6: new trace format
+# version 7: corrected bug in min function, tput and rate changed to bps (*8)
+# version 8: problemas com DROPs contabilizados em excesso 
+# version 9: trying to normalize end-to-end delay... give SIM_TIME to dropped nodes
+
+#------------------------------------------------------------------------------
+function average (array) {
+    sum = 0;
+    items = 0;
+    for (i in array) {
+	sum += array[i];
+	items++;
+    }
+    if (sum == 0 || items == 0)
+	return 0;
+    else
+	return sum / items;
+}
+
+#------------------------------------------------------------------------------
+function max( array ) {
+    begin=1;
+    for (i in array) {
+	if (begin || array[i] > largest){
+	    largest = array[i];
+	    begin = 0;
+	}
+    }
+    return largest;
+}
+#------------------------------------------------------------------------------
+function min(array) {
+    begin=1;
+    for (i in array){
+	if (begin || array[i] < smallest) {
+	    smallest = array[i];
+	    begin = 0;
+	}
+    }
+    return smallest;
+}
+#------------------------------------------------------------------------------
+function std_deviation(array, avg) {
+    total = 0;
+    items = 0;
+    for (i in array) {
+	delta = array[i] - avg;
+	#print("i="i" array[i]="array[i]" delta="delta);
+	total += delta*delta;
+	items++;
+    }
+    if (total == 0 || items == 0)
+	return 0;
+    else
+	return sqrt(total/(items-1));
+}
+#------------------------------------------------------------------------------

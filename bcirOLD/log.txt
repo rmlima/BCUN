@@ -1,0 +1,68 @@
+######################## Log Simulation ##########################
+Date:Sáb Jul 19 00:28:33 WEST 2014
+Nodes: 10
+Iterations: 1
+Delay: 1
+Jitter: .1
+Area: 814x814m² = 0 Km²
+Density: 15 Nodes/Km²
+TOTAL Search: 9
+Iterations Discarded: 6 : 66%
+DelayFlood: rng.uniform(1,.1)
+AddedDelay: 1*2*H+DelayFlood
+Total LOG size: 148
+############################ TIME ################################
+Execution time was 0 minutes and 3 seconds =  0 Hours
+################### GLOBAL CONNECTIVITY  #########################
+FLOOD FAILS : Fs=6 : Fa=0 	 66%
+BERS  FAILS : Fs=6 : Fa=0 	 66%
+BCIR  FAILS : Fs=6 : Fc=0 	 66%
+##################################################################
+################# LAST NETWORK - LAST SEARCH #####################
+##################################################################
+####### Simulation TIME  - Last Network - Last Search ############
+Simulation Time FLOOD: 2.04524
+Simulation Time BERS:  6.04524
+Simulation Time BCIR:  6.04524
+##################################################################
+########## CONNECTIVITY - Last Network - Last Search  ############
+FLOOD FAILS : 6 : 0 	 66%
+BERS  FAILS : 6 : 0 	 66%
+BCIR  FAILS : 6 : 0 	 66%
+##################################################################
+########## COLLISIONS - Last Network - Last Search ###############
+Drops at FLOOD - Last: 0 	 0%
+Drops at BERS  - Last: 0 	 0%
+Drops at BCIR  - Last: 0 	 0%
+##### EVENT COLLISIONS - Last Network - Last Search ##############
+Drops at FLOOD - Last: 0 	 0%
+Drops at BERS  - Last: 0 	 0%
+Drops at BCIR  - Last: 0 	 0%
+##################################################################
+######################### FLOOD ##################################
+############# STATS - Last Network - Last Search #################
+Run Time = 		2.043742 s
+Packets Sent = 		4
+Packets Received = 	6
+Load = 			15.290581 Kbps
+Throughput = 		22.935872 Kbps
+Run Time = 		2.043742 s
+##################################################################
+########################## BERS ##################################
+############# STATS - Last Network - Last Search #################
+Run Time = 		6.043742 s
+Packets Sent = 		4
+Packets Received = 	6
+Load = 			5.170638 Kbps
+Throughput = 		7.755957 Kbps
+Run Time = 		6.043742 s
+##################################################################
+########################## BCIR ##################################
+############# STATS - Last Network - Last Search #################
+Run Time = 		6.043742 s
+Packets Sent = 		4
+Packets Received = 	6
+Load = 			5.170638 Kbps
+Throughput = 		7.755957 Kbps
+Run Time = 		6.043742 s
+##################################################################

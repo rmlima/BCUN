@@ -1,0 +1,9 @@
+Tasks: 244 total,   3 running, 240 sleeping,   0 stopped,   1 zombie
+%Cpu(s): 26.1 us,  1.0 sy,  0.0 ni, 72.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem:   4032232 total,  3765256 used,   266976 free,     1748 buffers
+KiB Swap:  8788988 total,   308672 used,  8480316 free,   494648 cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S  %CPU %MEM    TIME+  COMMAND                                
+20694 rml       20   0  649m 617m 5352 R  99.4 15.7   0:30.23 ns                                     
+ 1168 root      20   0  398m 222m  12m S   5.0  5.6 105:12.00 Xorg                                   
+
